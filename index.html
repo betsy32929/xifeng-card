@@ -16,10 +16,25 @@
     .points { font-size: 28px; margin: 15px 0; }
     .thumb { display: inline-block; font-size: 34px; margin: 5px; position: relative; width: 50px; height: 50px; text-align: center; }
     .thumb span { position: absolute; top: -8px; right: -12px; font-size: 14px; color: #333; }
-    .smileX { color: red; font-size: 36px; font-weight: bold; position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; line-height: 50px; pointer-events: none; }
+
+    /* 紅色大 X */
+    .bigX { 
+      color: red; 
+      font-size: 48px; 
+      font-weight: bold; 
+      position: absolute; 
+      top: -5px; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      text-align: center; 
+      line-height: 50px; 
+      pointer-events: none; 
+    }
 
     #smileFaces { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
     .smile { font-size: 40px; margin: 10px; cursor: pointer; position: relative; width: 50px; height: 50px; line-height: 50px; text-align: center; }
+    .smileX { color: red; font-size: 48px; font-weight: bold; position: absolute; top: -5px; left: 0; width: 100%; height: 100%; text-align: center; line-height: 50px; pointer-events: none; }
 
     .progress-circle { font-size: 24px; margin: 2px; }
   </style>
@@ -60,7 +75,7 @@
         if (thumb.cancelled) {
           const xx = document.createElement("span");
           xx.textContent = "X";
-          xx.className = "smileX";
+          xx.className = "bigX";
           div.appendChild(xx);
         }
 

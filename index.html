@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>析楓專屬集點卡</title>
+  <style>
+    body { font-family: "Microsoft JhengHei", sans-serif; text-align: center; background: #fff9e6; margin: 0; padding: 20px; }
+    h1 { color: #ff9800; }
+
+    button { font-size: 18px; padding: 10px 18px; margin: 8px; border: none; border-radius: 12px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+    #addPointBtn { background-color: #ffcc80; }
+    #redeemBtn { background-color: #ffc0cb; }
+    #resetBtn { background-color: #d3d3d3; }
+
+    .points { font-size: 28px; margin: 15px 0; }
+    .thumb { display: inline-block; font-size: 34px; margin: 5px; position: relative; width: 50px; height: 50px; text-align: center; }
+    .thumb span { position: absolute; top: -8px; right: -12px; font-size: 14px; color: #333; }
+
+    /* 紅色大 X 樣式 (只給 😀 用) */
+    .smileX { 
+      color: red; 
+      font-size: 48px; 
+      font-weight: bold; 
+      position: absolute; 
+      top: -5px; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      text-align: center; 
+      line-height: 50px; 
+      pointer-events: none; 
+    }
+
+    #smileFaces { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+    .smile { font-size: 40px; margin: 10px; cursor: pointer; position: relative; width: 50px; height: 50px; line-height: 50px; text-align: center; }
+
+    .progress-circle { font-size: 24px; margin: 2px; }
+  </style>
+</head>
+<body>
+  <h1>析楓專屬集點卡</h1>
+
+  <div class="points" id="pointsArea"></div>
+  <div id="progressCircle"></div>
+  <div id="smileFaces"></div>
+
+  <button onclick="addPoint()" id="addPointBtn">+1 點</button>
+  <button onclick="redeemSmile()" id="redeemBtn">換笑臉 😀</button>
+  <button onclick="resetAll()" id="resetBtn">重置全部</button>
+
+  <script>
+    let thumbs = JSON.parse(localStorage.getItem("thumbs")) || [];
+    let smilesData = JSON.parse(localStorage.getItem("smiles")) || [];
+
+    function saveData() {
+      localStorage.setItem("thumbs", JSON.stringify(thumbs));
+      localStorage.setItem("smiles", JSON.stringify(smilesData));
+    }
+
+    function updateDisplay() {
+      const pointArea = document.getElementById("pointsArea");
+      pointArea.innerHTML = "";
+
+      thumbs.forEach((thumb, index) => {
+        const div = document.createElement("div");
+        div.className = "thumb";
+        div.textContent = "👍";
+
+        const num = document.createElement("span");
+        num.textContent = index + 1;
+        div.appendChild(num);
+
+        // 點擊 👍 → 直接刪除
+        div.onclick = function() {
+          if (confirm("要取消這個 👍 嗎？")) {
+            thumbs.splice(index, 1);
+            saveData();
+            updateDisplay();
+          }
+        };
+
+        pointArea.appendChild(div);
+      });
+
+      // 進度條：計算剩餘 👍
+      const progressArea = document.getElementById("progressCircle");
+      progressArea.innerHTML = "";
+      const validPoints = thumbs.length;
+      const current = validPoints % 10;
+      for (let i = 0; i < 10; i++) {
+        const span = document.createElement("span");
+        span.className = "progress-circle";
+        span.textContent = i < current ? "●" : "○";
+        progressArea.appendChild(span);
+      }
+
+      // 😀 笑臉區
+      const smileContainer = document.getElementById("smileFaces");
+      smileContainer.innerHTML = "";
+      smilesData.forEach((smile, index) => {
+        const span = document.createElement("span");
+        span.className = "smile";
+        span.textContent = "😀";
+
+        if (smile.redeemed) {
+          const xx = document.createElement("span");
+          xx.textContent = "X";
+          xx.className = "smileX";
+          span.appendChild(xx);
+        }
+
+        span.onclick = function() {
+          if (!smile.redeemed) {
+            if (confirm("確定要更換實體笑臉？")) {
+              smilesData[index].redeemed = true;
+              saveData();
+              updateDisplay();
+            }
+          } else {
+            if (confirm("確定要刪除這個笑臉嗎？")) {
+              smilesData.splice(index, 1);
+              saveData();
+              updateDisplay();
+            }
+          }
+        };
+        smileContainer.appendChild(span);
+      });
+    }
+
+    function addPoint() {
+      thumbs.push({});
+      saveData();
+      updateDisplay();
+    }
+
+    function redeemSmile() {
+      if (thumbs.length >= 10) {
+        thumbs.splice(0, 10); // 消耗前 10 個 👍
+        smilesData.push({ redeemed: false });
+        saveData();
+        updateDisplay();
+      } else {
+        alert("需要至少 10 點才能兌換笑臉！");
+      }
+    }
+
+    function resetAll() {
+      if (confirm("確定要重置嗎？點數與笑臉都會歸零")) {
+        thumbs = [];
+        smilesData = [];
+        saveData();
+        updateDisplay();
+      }
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>

@@ -17,7 +17,7 @@
     .thumb { display: inline-block; font-size: 34px; margin: 5px; position: relative; width: 50px; height: 50px; text-align: center; }
     .thumb span { position: absolute; top: -8px; right: -12px; font-size: 14px; color: #333; }
 
-    /* 紅色大 X 樣式 (👍 和 😀 共用) */
+    /* 紅色大 X 樣式 (只給 😀 用) */
     .smileX { 
       color: red; 
       font-size: 48px; 
@@ -71,36 +71,22 @@
         num.textContent = index + 1;
         div.appendChild(num);
 
-        if (thumb.cancelled) {
-          const xx = document.createElement("span");
-          xx.textContent = "X";
-          xx.className = "smileX";  // 👍 和 😀 共用紅色大 X
-          div.appendChild(xx);
-        }
-
+        // 點擊 👍 → 直接刪除
         div.onclick = function() {
-          if (!thumb.cancelled) {
-            if (confirm("確定要取消這個 👍 嗎？")) {
-              thumbs[index].cancelled = true;
-              saveData();
-              updateDisplay();
-            }
-          } else {
-            if (confirm("要恢復這個 👍 嗎？")) {
-              thumbs[index].cancelled = false;
-              saveData();
-              updateDisplay();
-            }
+          if (confirm("要取消這個 👍 嗎？")) {
+            thumbs.splice(index, 1);
+            saveData();
+            updateDisplay();
           }
         };
 
         pointArea.appendChild(div);
       });
 
-      // 進度條：只算未取消的 👍
+      // 進度條：計算剩餘 👍
       const progressArea = document.getElementById("progressCircle");
       progressArea.innerHTML = "";
-      const validPoints = thumbs.filter(t => !t.cancelled).length;
+      const validPoints = thumbs.length;
       const current = validPoints % 10;
       for (let i = 0; i < 10; i++) {
         const span = document.createElement("span");
@@ -132,7 +118,7 @@
               updateDisplay();
             }
           } else {
-            if (confirm("確定要取消這個笑臉嗎？")) {
+            if (confirm("確定要刪除這個笑臉嗎？")) {
               smilesData.splice(index, 1);
               saveData();
               updateDisplay();
@@ -144,22 +130,14 @@
     }
 
     function addPoint() {
-      thumbs.push({ cancelled: false });
+      thumbs.push({});
       saveData();
       updateDisplay();
     }
 
     function redeemSmile() {
-      const validPoints = thumbs.filter(t => !t.cancelled).length;
-      if (validPoints >= 10) {
-        let count = 0;
-        for (let t of thumbs) {
-          if (!t.cancelled) {
-            t.cancelled = true; // 被消耗
-            count++;
-            if (count === 10) break;
-          }
-        }
+      if (thumbs.length >= 10) {
+        thumbs.splice(0, 10); // 消耗前 10 個 👍
         smilesData.push({ redeemed: false });
         saveData();
         updateDisplay();

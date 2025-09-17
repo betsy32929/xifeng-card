@@ -13,27 +13,36 @@
     #redeemBtn { background-color: #ffc0cb; }
     #resetBtn { background-color: #d3d3d3; }
 
-    .points { font-size: 28px; margin: 15px 0; }
-    .thumb { display: inline-block; font-size: 34px; margin: 5px; position: relative; width: 50px; height: 50px; text-align: center; }
-    .thumb span { position: absolute; top: -8px; right: -12px; font-size: 14px; color: #333; }
-
-    /* 紅色大 X 樣式 (只給 😀 用) */
-    .smileX { 
-      color: red; 
-      font-size: 48px; 
-      font-weight: bold; 
+    .points { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, 50px); 
+      justify-content: center; 
+      gap: 5px; 
+      margin: 15px 0; 
+    }
+    .thumb { 
+      font-size: 34px; 
+      width: 50px; 
+      height: 50px; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      border: 1px solid #ccc; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      position: relative; 
+    }
+    .thumb span { 
       position: absolute; 
-      top: -5px; 
-      left: 0; 
-      width: 100%; 
-      height: 100%; 
-      text-align: center; 
-      line-height: 50px; 
-      pointer-events: none; 
+      top: -8px; 
+      right: -8px; 
+      font-size: 14px; 
+      color: #333; 
     }
 
     #smileFaces { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
     .smile { font-size: 40px; margin: 10px; cursor: pointer; position: relative; width: 50px; height: 50px; line-height: 50px; text-align: center; }
+    .smileX { color: red; font-size: 48px; font-weight: bold; position: absolute; top: -5px; left: 0; width: 100%; height: 100%; text-align: center; line-height: 50px; pointer-events: none; }
 
     .progress-circle { font-size: 24px; margin: 2px; }
   </style>
@@ -71,7 +80,7 @@
         num.textContent = index + 1;
         div.appendChild(num);
 
-        // 點擊 👍 → 可刪除
+        // 點擊 👍 → 刪除
         div.onclick = function() {
           if (confirm("要取消這個 👍 嗎？")) {
             thumbs.splice(index, 1);
@@ -83,7 +92,7 @@
         pointArea.appendChild(div);
       });
 
-      // 進度條：計算目前 👍 數
+      // 進度條
       const progressArea = document.getElementById("progressCircle");
       progressArea.innerHTML = "";
       const validPoints = thumbs.length;

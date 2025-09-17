@@ -71,7 +71,7 @@
         num.textContent = index + 1;
         div.appendChild(num);
 
-        // 點擊 👍 → 直接刪除
+        // 點擊 👍 → 可刪除
         div.onclick = function() {
           if (confirm("要取消這個 👍 嗎？")) {
             thumbs.splice(index, 1);
@@ -83,7 +83,7 @@
         pointArea.appendChild(div);
       });
 
-      // 進度條：計算剩餘 👍
+      // 進度條：計算目前 👍 數
       const progressArea = document.getElementById("progressCircle");
       progressArea.innerHTML = "";
       const validPoints = thumbs.length;
@@ -137,7 +137,7 @@
 
     function redeemSmile() {
       if (thumbs.length >= 10) {
-        thumbs.splice(0, 10); // 消耗前 10 個 👍
+        thumbs.splice(0, 10); // 消耗 10 個 👍
         smilesData.push({ redeemed: false });
         saveData();
         updateDisplay();

@@ -10,12 +10,12 @@
 
     #status { font-size: 22px; margin: 10px 0; color: #333; }
 
-    /* 大角色按鈕樣式 */
+    /* 大角色按鈕樣式：正方形 */
     .buttonGrid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
-      max-width: 400px;
+      max-width: 340px;
       margin: 0 auto 20px;
     }
     .charBtn {
@@ -26,16 +26,16 @@
       background-color: #ffcc80;
       border: none;
       border-radius: 12px;
-      font-size: 26px;
+      font-size: 28px;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
-      height: 140px;
-      width: 100%;
+      width: 150px;
+      height: 150px;
     }
     .charBtn img {
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
       margin-top: 8px;
     }
 
@@ -100,7 +100,7 @@
   <div class="points" id="pointsArea"></div>
   <div id="smileFaces"></div>
 
-  <!-- 四個角色大按鈕：2x2 格子 -->
+  <!-- 四個角色大按鈕：2x2 正方形 -->
   <div class="buttonGrid">
     <button class="charBtn">
       +1

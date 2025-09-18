@@ -10,17 +10,43 @@
 
     #status { font-size: 22px; margin: 10px 0; color: #333; }
 
-    button { 
-      font-size: 20px; 
+    /* 大角色按鈕樣式 */
+    .buttonGrid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      max-width: 400px;
+      margin: 0 auto 20px;
+    }
+    .charBtn {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffcc80;
+      border: none;
+      border-radius: 12px;
+      font-size: 26px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+      height: 140px;
+      width: 100%;
+    }
+    .charBtn img {
+      width: 60px;
+      height: 60px;
+      margin-top: 8px;
+    }
+
+    #removePointBtn, #redeemBtn, #resetBtn {
+      font-size: 22px; 
       padding: 12px 20px; 
-      margin: 8px; 
       border: none; 
-      border-radius: 12px; 
+      border-radius: 10px; 
       cursor: pointer; 
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.2); 
-      display: inline-flex; 
-      align-items: center; 
-      gap: 8px;
+      margin: 5px; 
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
     }
     #removePointBtn { background-color: #ff9999; }
     #redeemBtn { background-color: #ffc0cb; }
@@ -64,8 +90,6 @@
     #smileFaces { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
     .smile { font-size: 50px; margin: 10px; cursor: pointer; position: relative; width: 60px; height: 60px; line-height: 60px; text-align: center; }
     .smileX { color: red; font-size: 55px; font-weight: bold; position: absolute; top: -5px; left: 0; width: 100%; height: 100%; text-align: center; line-height: 60px; pointer-events: none; }
-
-    .addBtnIcon { width: 28px; height: 28px; }
   </style>
 </head>
 <body>
@@ -76,24 +100,25 @@
   <div class="points" id="pointsArea"></div>
   <div id="smileFaces"></div>
 
-  <!-- 四個角色按鈕 -->
-  <button onclick="addPoint()" style="background-color:#ffcc80;">
-    +1 點 <img src="https://betsy32929.github.io/xifeng-card/波力.png" class="addBtnIcon" alt="波力">
-  </button>
-
-  <button onclick="addPoint()" style="background-color:#ffcc80;">
-    +1 點 <img src="https://betsy32929.github.io/xifeng-card/安寶.png" class="addBtnIcon" alt="安寶">
-  </button>
-
-  <button onclick="addPoint()" style="background-color:#ffcc80;">
-    +1 點 <img src="https://betsy32929.github.io/xifeng-card/羅伊.png" class="addBtnIcon" alt="羅伊">
-  </button>
-
-  <button onclick="addPoint()" style="background-color:#ffcc80;">
-    +1 點 <img src="https://betsy32929.github.io/xifeng-card/赫力.png" class="addBtnIcon" alt="赫力">
-  </button>
-
-  <br>
+  <!-- 四個角色大按鈕：2x2 格子 -->
+  <div class="buttonGrid">
+    <button class="charBtn">
+      +1
+      <img src="https://betsy32929.github.io/xifeng-card/波力.png" alt="波力">
+    </button>
+    <button class="charBtn">
+      +1
+      <img src="https://betsy32929.github.io/xifeng-card/安寶.png" alt="安寶">
+    </button>
+    <button class="charBtn">
+      +1
+      <img src="https://betsy32929.github.io/xifeng-card/羅伊.png" alt="羅伊">
+    </button>
+    <button class="charBtn">
+      +1
+      <img src="https://betsy32929.github.io/xifeng-card/赫力.png" alt="赫力">
+    </button>
+  </div>
 
   <button onclick="removePoint()" id="removePointBtn">-1 點</button>
   <button onclick="redeemSmile()" id="redeemBtn">換笑臉 😀</button>
@@ -120,7 +145,7 @@
 
         if (i < thumbs.length) {
           const img = document.createElement("img");
-          img.src = thumbs[i].icon; // 每個點數用當時的角色圖片
+          img.src = thumbs[i].icon; 
           div.appendChild(img);
 
           if (thumbs[i].cancelled) {
@@ -188,8 +213,8 @@
       updateDisplay();
     }
 
-    // 讓每個角色按鈕呼叫時帶入不同圖片
-    document.querySelectorAll("button[onclick='addPoint()']").forEach(btn => {
+    // 綁定角色大按鈕
+    document.querySelectorAll(".charBtn").forEach(btn => {
       btn.onclick = () => {
         const img = btn.querySelector("img");
         addPoint(img.src);

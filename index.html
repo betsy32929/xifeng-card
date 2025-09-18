@@ -10,8 +10,18 @@
 
     #status { font-size: 22px; margin: 10px 0; color: #333; }
 
-    button { font-size: 20px; padding: 12px 20px; margin: 8px; border: none; border-radius: 12px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 8px; }
-    #addPointBtn { background-color: #ffcc80; }
+    button { 
+      font-size: 20px; 
+      padding: 12px 20px; 
+      margin: 8px; 
+      border: none; 
+      border-radius: 12px; 
+      cursor: pointer; 
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2); 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px;
+    }
     #removePointBtn { background-color: #ff9999; }
     #redeemBtn { background-color: #ffc0cb; }
     #resetBtn { background-color: #d3d3d3; }
@@ -66,11 +76,24 @@
   <div class="points" id="pointsArea"></div>
   <div id="smileFaces"></div>
 
-  <!-- 按鈕顯示 +1 點 + 圖案 -->
-  <button onclick="addPoint()" id="addPointBtn">
-    +1 點
-    <img src="https://betsy32929.github.io/xifeng-card/波力.png" alt="+1" class="addBtnIcon">
+  <!-- 四個角色按鈕 -->
+  <button onclick="addPoint()" style="background-color:#ffcc80;">
+    +1 點 <img src="https://betsy32929.github.io/xifeng-card/波力.png" class="addBtnIcon" alt="波力">
   </button>
+
+  <button onclick="addPoint()" style="background-color:#ffcc80;">
+    +1 點 <img src="https://betsy32929.github.io/xifeng-card/安寶.png" class="addBtnIcon" alt="安寶">
+  </button>
+
+  <button onclick="addPoint()" style="background-color:#ffcc80;">
+    +1 點 <img src="https://betsy32929.github.io/xifeng-card/羅伊.png" class="addBtnIcon" alt="羅伊">
+  </button>
+
+  <button onclick="addPoint()" style="background-color:#ffcc80;">
+    +1 點 <img src="https://betsy32929.github.io/xifeng-card/赫力.png" class="addBtnIcon" alt="赫力">
+  </button>
+
+  <br>
 
   <button onclick="removePoint()" id="removePointBtn">-1 點</button>
   <button onclick="redeemSmile()" id="redeemBtn">換笑臉 😀</button>
@@ -97,7 +120,7 @@
 
         if (i < thumbs.length) {
           const img = document.createElement("img");
-          img.src = "https://betsy32929.github.io/xifeng-card/波力.png"; // 格子用圖片取代 👍
+          img.src = thumbs[i].icon; // 每個點數用當時的角色圖片
           div.appendChild(img);
 
           if (thumbs[i].cancelled) {
@@ -159,11 +182,19 @@
       });
     }
 
-    function addPoint() {
-      thumbs.push({ cancelled: false });
+    function addPoint(iconUrl) {
+      thumbs.push({ cancelled: false, icon: iconUrl });
       saveData();
       updateDisplay();
     }
+
+    // 讓每個角色按鈕呼叫時帶入不同圖片
+    document.querySelectorAll("button[onclick='addPoint()']").forEach(btn => {
+      btn.onclick = () => {
+        const img = btn.querySelector("img");
+        addPoint(img.src);
+      };
+    });
 
     function removePoint() {
       for (let i = thumbs.length - 1; i >= 0; i--) {

@@ -10,7 +10,7 @@
 
     #status { font-size: 22px; margin: 10px 0; color: #333; }
 
-    button { font-size: 20px; padding: 12px 20px; margin: 8px; border: none; border-radius: 12px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+    button { font-size: 20px; padding: 12px 20px; margin: 8px; border: none; border-radius: 12px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); display: inline-flex; align-items: center; gap: 8px; }
     #addPointBtn { background-color: #ffcc80; }
     #removePointBtn { background-color: #ff9999; }
     #redeemBtn { background-color: #ffc0cb; }
@@ -18,28 +18,28 @@
 
     .points { 
       display: grid; 
-      grid-template-columns: repeat(5, 60px);  /* 每排固定 5 格 */
+      grid-template-columns: repeat(5, 70px); 
       justify-content: center; 
-      gap: 6px; 
+      gap: 8px; 
       margin: 15px 0; 
     }
     .slot { 
-      width: 60px; 
-      height: 60px; 
+      width: 70px; 
+      height: 70px; 
       border: 1px solid #ccc; 
       border-radius: 8px; 
       display: flex; 
       justify-content: center; 
       align-items: center; 
-      font-size: 42px;   /* 👍 放大 */
       background: #fff; 
       position: relative;
       cursor: pointer;
     }
+    .slot img { width: 60px; height: 60px; }
 
     .cancelX { 
       color: red; 
-      font-size: 42px; 
+      font-size: 46px; 
       font-weight: bold; 
       position: absolute; 
       top: 0; 
@@ -47,24 +47,31 @@
       width: 100%; 
       height: 100%; 
       text-align: center; 
-      line-height: 60px; 
+      line-height: 70px; 
       pointer-events: none; 
     }
 
     #smileFaces { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
     .smile { font-size: 50px; margin: 10px; cursor: pointer; position: relative; width: 60px; height: 60px; line-height: 60px; text-align: center; }
     .smileX { color: red; font-size: 55px; font-weight: bold; position: absolute; top: -5px; left: 0; width: 100%; height: 100%; text-align: center; line-height: 60px; pointer-events: none; }
+
+    .addBtnIcon { width: 28px; height: 28px; }
   </style>
 </head>
 <body>
   <h1>析楓專屬集點卡</h1>
 
-  <div id="status">目前有效 👍：0 個</div>
+  <div id="status">目前有效點數：0 個</div>
 
   <div class="points" id="pointsArea"></div>
   <div id="smileFaces"></div>
 
-  <button onclick="addPoint()" id="addPointBtn">+1 點</button>
+  <!-- 按鈕顯示 +1 點 + 圖案 -->
+  <button onclick="addPoint()" id="addPointBtn">
+    +1 點
+    <img src="https://betsy32929.github.io/xifeng-card/波力.png" alt="+1" class="addBtnIcon">
+  </button>
+
   <button onclick="removePoint()" id="removePointBtn">-1 點</button>
   <button onclick="redeemSmile()" id="redeemBtn">換笑臉 😀</button>
   <button onclick="resetAll()" id="resetBtn">重置全部</button>
@@ -82,7 +89,6 @@
       const pointArea = document.getElementById("pointsArea");
       pointArea.innerHTML = "";
 
-      // 每行固定 5 格
       const totalSlots = Math.ceil(thumbs.length / 5) * 5 || 5;
 
       for (let i = 0; i < totalSlots; i++) {
@@ -90,7 +96,9 @@
         div.className = "slot";
 
         if (i < thumbs.length) {
-          div.textContent = "👍";
+          const img = document.createElement("img");
+          img.src = "https://betsy32929.github.io/xifeng-card/波力.png"; // 格子用圖片取代 👍
+          div.appendChild(img);
 
           if (thumbs[i].cancelled) {
             const xx = document.createElement("span");
@@ -101,11 +109,11 @@
 
           div.onclick = function() {
             if (!thumbs[i].cancelled) {
-              if (confirm("要取消這個 👍 嗎？")) {
+              if (confirm("要取消這個點數嗎？")) {
                 thumbs[i].cancelled = true;
               }
             } else {
-              if (confirm("要恢復這個 👍 嗎？")) {
+              if (confirm("要恢復這個點數嗎？")) {
                 thumbs[i].cancelled = false;
               }
             }
@@ -118,7 +126,7 @@
       }
 
       const validPoints = thumbs.filter(t => !t.cancelled).length;
-      document.getElementById("status").textContent = `目前有效 👍：${validPoints} 個`;
+      document.getElementById("status").textContent = `目前有效點數：${validPoints} 個`;
 
       const smileContainer = document.getElementById("smileFaces");
       smileContainer.innerHTML = "";
@@ -181,7 +189,7 @@
         saveData();
         updateDisplay();
       } else {
-        alert("需要至少 10 個有效 👍 才能兌換笑臉！");
+        alert("需要至少 10 個有效點數才能兌換笑臉！");
       }
     }
 

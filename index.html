@@ -10,12 +10,12 @@
 
     #status { font-size: 22px; margin: 10px 0; color: #333; }
 
-    /* 大角色按鈕樣式：正方形 */
+    /* 角色按鈕正方形 100px */
     .buttonGrid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      max-width: 340px;
+      gap: 10px;
+      max-width: 220px;
       margin: 0 auto 20px;
     }
     .charBtn {
@@ -25,25 +25,25 @@
       align-items: center;
       background-color: #ffcc80;
       border: none;
-      border-radius: 12px;
-      font-size: 28px;
+      border-radius: 10px;
+      font-size: 22px;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
-      width: 150px;
-      height: 150px;
+      width: 100px;
+      height: 100px;
     }
     .charBtn img {
-      width: 70px;
-      height: 70px;
-      margin-top: 8px;
+      width: 45px;
+      height: 45px;
+      margin-top: 4px;
     }
 
     #removePointBtn, #redeemBtn, #resetBtn {
-      font-size: 22px; 
-      padding: 12px 20px; 
+      font-size: 20px; 
+      padding: 10px 16px; 
       border: none; 
-      border-radius: 10px; 
+      border-radius: 8px; 
       cursor: pointer; 
       margin: 5px; 
       box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
@@ -54,16 +54,16 @@
 
     .points { 
       display: grid; 
-      grid-template-columns: repeat(5, 70px); 
+      grid-template-columns: repeat(5, 60px); 
       justify-content: center; 
-      gap: 8px; 
+      gap: 6px; 
       margin: 15px 0; 
     }
     .slot { 
-      width: 70px; 
-      height: 70px; 
+      width: 60px; 
+      height: 60px; 
       border: 1px solid #ccc; 
-      border-radius: 8px; 
+      border-radius: 6px; 
       display: flex; 
       justify-content: center; 
       align-items: center; 
@@ -71,11 +71,11 @@
       position: relative;
       cursor: pointer;
     }
-    .slot img { width: 60px; height: 60px; }
+    .slot img { width: 50px; height: 50px; }
 
     .cancelX { 
       color: red; 
-      font-size: 46px; 
+      font-size: 40px; 
       font-weight: bold; 
       position: absolute; 
       top: 0; 
@@ -83,13 +83,13 @@
       width: 100%; 
       height: 100%; 
       text-align: center; 
-      line-height: 70px; 
+      line-height: 60px; 
       pointer-events: none; 
     }
 
     #smileFaces { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
-    .smile { font-size: 50px; margin: 10px; cursor: pointer; position: relative; width: 60px; height: 60px; line-height: 60px; text-align: center; }
-    .smileX { color: red; font-size: 55px; font-weight: bold; position: absolute; top: -5px; left: 0; width: 100%; height: 100%; text-align: center; line-height: 60px; pointer-events: none; }
+    .smile { font-size: 46px; margin: 8px; cursor: pointer; position: relative; width: 55px; height: 55px; line-height: 55px; text-align: center; }
+    .smileX { color: red; font-size: 50px; font-weight: bold; position: absolute; top: -5px; left: 0; width: 100%; height: 100%; text-align: center; line-height: 55px; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -100,7 +100,7 @@
   <div class="points" id="pointsArea"></div>
   <div id="smileFaces"></div>
 
-  <!-- 四個角色大按鈕：2x2 正方形 -->
+  <!-- 四個角色小正方形 100x100 -->
   <div class="buttonGrid">
     <button class="charBtn">
       +1
@@ -213,7 +213,7 @@
       updateDisplay();
     }
 
-    // 綁定角色大按鈕
+    // 綁定角色小按鈕
     document.querySelectorAll(".charBtn").forEach(btn => {
       btn.onclick = () => {
         const img = btn.querySelector("img");

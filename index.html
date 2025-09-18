@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>析楓專屬集點卡</title>
+  <style>
+    body { font-family: "Microsoft JhengHei", sans-serif; text-align: center; background: #fff9e6; margin: 0; padding: 20px; }
+    h1 { color: #ff9800; }
+
+    #status { font-size: 22px; margin: 10px 0; color: #333; }
+
+    button { font-size: 20px; padding: 12px 20px; margin: 8px; border: none; border-radius: 12px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+    #addPointBtn { background-color: #ffcc80; }
+    #removePointBtn { background-color: #ff9999; }
+    #redeemBtn { background-color: #ffc0cb; }
+    #resetBtn { background-color: #d3d3d3; }
+
+    .points { 
+      display: grid; 
+      grid-template-columns: repeat(10, 60px); 
+      justify-content: center; 
+      gap: 6px; 
+      margin: 15px 0; 
+    }
+    .slot { 
+      width: 60px; 
+      height: 60px; 
+      border: 1px solid #ccc; 
+      border-radius: 8px; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      font-size: 42px;   /* 👍 放大 */
+      background: #fff; 
+      position: relative;
+      cursor: pointer;
+    }
+
+    .cancelX { 
+      color: red; 
+      font-size: 42px;   /* 紅色大 X 放大 */
+      font-weight: bold; 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      text-align: center; 
+      line-height: 60px; 
+      pointer-events: none; 
+    }
+
+    #smileFaces { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+    .smile { font-size: 50px; margin: 10px; cursor: pointer; position: relative; width: 60px; height: 60px; line-height: 60px; text-align: center; }
+    .smileX { color: red; font-size: 55px; font-weight: bold; position: absolute; top: -5px; left: 0; width: 100%; height: 100%; text-align: center; line-height: 60px; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <h1>析楓專屬集點卡</h1>
+
+  <!-- 顯示目前有效 👍 數字 -->
+  <div id="status">目前有效 👍：0 個</div>
+
+  <div class="points" id="pointsArea"></div>
+  <div id="smileFaces"></div>
+
+  <button onclick="addPoint()" id="addPointBtn">+1 點</button>
+  <button onclick="removePoint()" id="removePointBtn">-1 點</button>
+  <button onclick="redeemSmile()" id="redeemBtn">換笑臉 😀</button>
+  <button onclick="resetAll()" id="resetBtn">重置全部</button>
+
+  <script>
+    let thumbs = JSON.parse(localStorage.getItem("thumbs")) || [];
+    let smilesData = JSON.parse(localStorage.getItem("smiles")) || [];
+
+    function saveData() {
+      localStorage.setItem("thumbs", JSON.stringify(thumbs));
+      localStorage.setItem("smiles", JSON.stringify(smilesData));
+    }
+
+    function updateDisplay() {
+      const pointArea = document.getElementById("pointsArea");
+      pointArea.innerHTML = "";
+
+      // 每行固定 10 格
+      const totalSlots = Math.ceil(thumbs.length / 10) * 10 || 10;
+
+      for (let i = 0; i < totalSlots; i++) {
+        const div = document.createElement("div");
+        div.className = "slot";
+
+        if (i < thumbs.length) {
+          div.textContent = "👍";
+
+          if (thumbs[i].cancelled) {
+            const xx = document.createElement("span");
+            xx.textContent = "X";
+            xx.className = "cancelX";
+            div.appendChild(xx);
+          }
+
+          // 點擊 👍 → 取消或恢復
+          div.onclick = function() {
+            if (!thumbs[i].cancelled) {
+              if (confirm("要取消這個 👍 嗎？")) {
+                thumbs[i].cancelled = true;
+              }
+            } else {
+              if (confirm("要恢復這個 👍 嗎？")) {
+                thumbs[i].cancelled = false;
+              }
+            }
+            saveData();
+            updateDisplay();
+          };
+        }
+
+        pointArea.appendChild(div);
+      }
+
+      // 更新有效 👍 數字
+      const validPoints = thumbs.filter(t => !t.cancelled).length;
+      document.getElementById("status").textContent = `目前有效 👍：${validPoints} 個`;
+
+      // 😀 笑臉區
+      const smileContainer = document.getElementById("smileFaces");
+      smileContainer.innerHTML = "";
+      smilesData.forEach((smile, index) => {
+        const span = document.createElement("span");
+        span.className = "smile";
+        span.textContent = "😀";
+
+        if (smile.redeemed) {
+          const xx = document.createElement("span");
+          xx.textContent = "X";
+          xx.className = "smileX";
+          span.appendChild(xx);
+        }
+
+        span.onclick = function() {
+          if (!smile.redeemed) {
+            if (confirm("確定要更換實體笑臉？")) {
+              smilesData[index].redeemed = true;
+            }
+          } else {
+            if (confirm("確定要刪除這個笑臉嗎？")) {
+              smilesData.splice(index, 1);
+            }
+          }
+          saveData();
+          updateDisplay();
+        };
+        smileContainer.appendChild(span);
+      });
+    }
+
+    function addPoint() {
+      thumbs.push({ cancelled: false });
+      saveData();
+      updateDisplay();
+    }
+
+    function removePoint() {
+      // 找最後一個沒有打 X 的 👍
+      for (let i = thumbs.length - 1; i >= 0; i--) {
+        if (!thumbs[i].cancelled) {
+          thumbs[i].cancelled = true; // 打紅 X
+          break;
+        }
+      }
+      saveData();
+      updateDisplay();
+    }
+
+    function redeemSmile() {
+      const validIndexes = thumbs
+        .map((t, i) => (!t.cancelled ? i : -1))
+        .filter(i => i >= 0);
+
+      if (validIndexes.length >= 10) {
+        // 移除前 10 個有效 👍
+        for (let i = 0; i < 10; i++) {
+          thumbs.splice(validIndexes[i] - i, 1);
+        }
+        smilesData.push({ redeemed: false });
+        saveData();
+        updateDisplay();
+      } else {
+        alert("需要至少 10 個有效 👍 才能兌換笑臉！");
+      }
+    }
+
+    function resetAll() {
+      if (confirm("確定要重置嗎？點數與笑臉都會歸零")) {
+        thumbs = [];
+        smilesData = [];
+        saveData();
+        updateDisplay();
+      }
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>

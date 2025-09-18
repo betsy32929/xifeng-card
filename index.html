@@ -40,7 +40,7 @@
     }
 
     /* 功能按鈕 */
-    #removePointBtn, #deleteBtn, #redeemBtn, #resetBtn {
+    #removePointBtn, #deleteBtn, #addSmileBtn, #redeemBtn, #resetBtn {
       font-size: 20px; 
       padding: 10px 16px; 
       border: none; 
@@ -51,6 +51,7 @@
     }
     #removePointBtn { background-color: #ff9999; }
     #deleteBtn { background-color: #e0e0e0; } /* 誤觸刪除 = 淡灰色 */
+    #addSmileBtn { background-color: #b2f2bb; } /* +笑臉 = 淡綠色 */
     #redeemBtn { background-color: #ffc0cb; }
     #resetBtn { background-color: #d3d3d3; }
 
@@ -115,6 +116,7 @@
   <!-- 功能按鈕 -->
   <button onclick="removePoint()" id="removePointBtn">-1 點</button>
   <button onclick="deletePoint()" id="deleteBtn">誤觸刪除</button>
+  <button onclick="addSmile()" id="addSmileBtn">+笑臉 😀</button>
   <button onclick="redeemSmile()" id="redeemBtn">換笑臉 😀</button>
   <button onclick="resetAll()" id="resetBtn">重置全部</button>
 
@@ -235,6 +237,12 @@
       } else {
         alert("目前沒有點數可以刪除！");
       }
+    }
+
+    function addSmile() {
+      smilesData.push({ redeemed: false });
+      saveData();
+      updateDisplay();
     }
 
     function redeemSmile() {

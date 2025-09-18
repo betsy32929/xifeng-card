@@ -10,12 +10,12 @@
 
     #status { font-size: 22px; margin: 10px 0; color: #333; }
 
-    /* 角色按鈕正方形 */
+    /* 方塊按鈕排版 */
     .buttonGrid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      max-width: 220px;
+      max-width: 330px;
       margin: 0 auto 20px;
     }
     .charBtn {
@@ -23,7 +23,6 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background-color: #ffcc80;
       border: none;
       border-radius: 10px;
       font-size: 22px;
@@ -38,9 +37,13 @@
       height: 45px;
       margin-top: 4px;
     }
+    /* 功能方塊顏色 */
+    .addSmileBtn { background-color: #ffdddd; }   /* 淡紅 */
+    .removeBtn { background-color: #fff0b3; }     /* 淡黃 */
+    .charBtn.role { background-color: #ffcc80; }  /* 角色原本的黃色 */
 
-    /* 功能按鈕 */
-    #removePointBtn, #deleteBtn, #addSmileBtn, #redeemBtn, #resetBtn {
+    /* 其他功能按鈕 */
+    #deleteBtn, #redeemBtn, #deleteAllSmilesBtn, #resetBtn {
       font-size: 20px; 
       padding: 10px 16px; 
       border: none; 
@@ -49,10 +52,9 @@
       margin: 5px; 
       box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
     }
-    #removePointBtn { background-color: #ff9999; }
-    #deleteBtn { background-color: #e0e0e0; } /* 誤觸刪除 = 淡灰色 */
-    #addSmileBtn { background-color: #b2f2bb; } /* +笑臉 = 淡綠色 */
+    #deleteBtn { background-color: #e0e0e0; }
     #redeemBtn { background-color: #ffc0cb; }
+    #deleteAllSmilesBtn { background-color: #ff6666; color: white; }
     #resetBtn { background-color: #d3d3d3; }
 
     /* 點數格子 */
@@ -131,19 +133,29 @@
   <div class="points" id="pointsArea"></div>
   <div id="smileFaces"></div>
 
-  <!-- 四個角色按鈕 -->
+  <!-- 方塊按鈕 -->
   <div class="buttonGrid">
-    <button class="charBtn"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/波力.png" alt="波力"></button>
-    <button class="charBtn"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/安寶.png" alt="安寶"></button>
-    <button class="charBtn"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/羅伊.png" alt="羅伊"></button>
-    <button class="charBtn"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/赫力.png" alt="赫力"></button>
+    <button class="charBtn role"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/波力.png" alt="波力"></button>
+    <button class="charBtn role"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/安寶.png" alt="安寶"></button>
+    <button class="charBtn role"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/羅伊.png" alt="羅伊"></button>
+    <button class="charBtn role"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/赫力.png" alt="赫力"></button>
+
+    <!-- 修改後的功能方塊 -->
+    <button class="charBtn addSmileBtn" onclick="addSmile()">
+      <span style="color:red; font-size:26px;">+</span>
+      <span style="font-size:42px;">😀</span>
+    </button>
+
+    <button class="charBtn removeBtn" onclick="removePoint()">
+      <span style="color:black; font-size:24px;">-1</span>
+      <span style="color:red; font-size:34px;">X</span>
+    </button>
   </div>
 
-  <!-- 功能按鈕 -->
-  <button onclick="removePoint()" id="removePointBtn">-1 點</button>
+  <!-- 其他功能按鈕 -->
   <button onclick="deletePoint()" id="deleteBtn">誤觸刪除</button>
-  <button onclick="addSmile()" id="addSmileBtn">+笑臉 😀</button>
   <button onclick="redeemSmile()" id="redeemBtn">兌換 😀</button>
+  <button onclick="deleteAllSmiles()" id="deleteAllSmilesBtn">刪除全部笑臉</button>
   <button onclick="resetAll()" id="resetBtn">重置全部</button>
 
   <script>
@@ -229,10 +241,11 @@
     }
 
     // 綁定角色按鈕
-    document.querySelectorAll(".charBtn").forEach(btn => {
-      btn.onclick = () => {
-        const img = btn.querySelector("img");
-        addPoint(img.src);
+    document.querySelectorAll(".charBtn.role img").forEach(imgBtn => {
+      imgBtn.parentElement.onclick = () => {
+        if (imgBtn.src.includes("png")) { // 角色按鈕
+          addPoint(imgBtn.src);
+        }
       };
     });
 
@@ -256,7 +269,7 @@
     function deletePoint() {
       if (thumbs.length > 0) {
         if (confirm("確定要刪除最後一個點數嗎？")) {
-          thumbs.pop(); // 直接移除最後一個
+          thumbs.pop();
           saveData();
           updateDisplay();
         }
@@ -266,9 +279,11 @@
     }
 
     function addSmile() {
-      smilesData.push({ redeemed: false });
-      saveData();
-      updateDisplay();
+      if (confirm("確定要直接新增一個笑臉嗎？")) {
+        smilesData.push({ redeemed: false });
+        saveData();
+        updateDisplay();
+      }
     }
 
     function redeemSmile() {
@@ -285,6 +300,18 @@
         updateDisplay();
       } else {
         alert("需要至少 10 個有效點數才能兌換笑臉！");
+      }
+    }
+
+    function deleteAllSmiles() {
+      if (smilesData.length > 0) {
+        if (confirm("確定要刪除所有笑臉嗎？")) {
+          smilesData = [];
+          saveData();
+          updateDisplay();
+        }
+      } else {
+        alert("目前沒有笑臉可以刪除！");
       }
     }
 

@@ -10,7 +10,7 @@
 
     #status { font-size: 22px; margin: 10px 0; color: #333; }
 
-    /* 角色按鈕正方形 100px */
+    /* 角色按鈕正方形 */
     .buttonGrid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -39,7 +39,8 @@
       margin-top: 4px;
     }
 
-    #removePointBtn, #redeemBtn, #resetBtn {
+    /* 功能按鈕 */
+    #removePointBtn, #deleteBtn, #redeemBtn, #resetBtn {
       font-size: 20px; 
       padding: 10px 16px; 
       border: none; 
@@ -49,9 +50,11 @@
       box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
     }
     #removePointBtn { background-color: #ff9999; }
+    #deleteBtn { background-color: #e0e0e0; } /* 誤觸刪除 = 淡灰色 */
     #redeemBtn { background-color: #ffc0cb; }
     #resetBtn { background-color: #d3d3d3; }
 
+    /* 點數格子 */
     .points { 
       display: grid; 
       grid-template-columns: repeat(5, 60px); 
@@ -87,6 +90,7 @@
       pointer-events: none; 
     }
 
+    /* 笑臉區 */
     #smileFaces { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
     .smile { font-size: 46px; margin: 8px; cursor: pointer; position: relative; width: 55px; height: 55px; line-height: 55px; text-align: center; }
     .smileX { color: red; font-size: 50px; font-weight: bold; position: absolute; top: -5px; left: 0; width: 100%; height: 100%; text-align: center; line-height: 55px; pointer-events: none; }
@@ -100,27 +104,17 @@
   <div class="points" id="pointsArea"></div>
   <div id="smileFaces"></div>
 
-  <!-- 四個角色小正方形 100x100 -->
+  <!-- 四個角色按鈕 -->
   <div class="buttonGrid">
-    <button class="charBtn">
-      +1
-      <img src="https://betsy32929.github.io/xifeng-card/波力.png" alt="波力">
-    </button>
-    <button class="charBtn">
-      +1
-      <img src="https://betsy32929.github.io/xifeng-card/安寶.png" alt="安寶">
-    </button>
-    <button class="charBtn">
-      +1
-      <img src="https://betsy32929.github.io/xifeng-card/羅伊.png" alt="羅伊">
-    </button>
-    <button class="charBtn">
-      +1
-      <img src="https://betsy32929.github.io/xifeng-card/赫力.png" alt="赫力">
-    </button>
+    <button class="charBtn"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/波力.png" alt="波力"></button>
+    <button class="charBtn"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/安寶.png" alt="安寶"></button>
+    <button class="charBtn"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/羅伊.png" alt="羅伊"></button>
+    <button class="charBtn"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/赫力.png" alt="赫力"></button>
   </div>
 
+  <!-- 功能按鈕 -->
   <button onclick="removePoint()" id="removePointBtn">-1 點</button>
+  <button onclick="deletePoint()" id="deleteBtn">誤觸刪除</button>
   <button onclick="redeemSmile()" id="redeemBtn">換笑臉 😀</button>
   <button onclick="resetAll()" id="resetBtn">重置全部</button>
 
@@ -136,7 +130,6 @@
     function updateDisplay() {
       const pointArea = document.getElementById("pointsArea");
       pointArea.innerHTML = "";
-
       const totalSlots = Math.ceil(thumbs.length / 5) * 5 || 5;
 
       for (let i = 0; i < totalSlots; i++) {
@@ -207,19 +200,19 @@
       });
     }
 
-    function addPoint(iconUrl) {
-      thumbs.push({ cancelled: false, icon: iconUrl });
-      saveData();
-      updateDisplay();
-    }
-
-    // 綁定角色小按鈕
+    // 綁定角色按鈕
     document.querySelectorAll(".charBtn").forEach(btn => {
       btn.onclick = () => {
         const img = btn.querySelector("img");
         addPoint(img.src);
       };
     });
+
+    function addPoint(iconUrl) {
+      thumbs.push({ cancelled: false, icon: iconUrl });
+      saveData();
+      updateDisplay();
+    }
 
     function removePoint() {
       for (let i = thumbs.length - 1; i >= 0; i--) {
@@ -230,6 +223,18 @@
       }
       saveData();
       updateDisplay();
+    }
+
+    function deletePoint() {
+      if (thumbs.length > 0) {
+        if (confirm("確定要刪除最後一個點數嗎？")) {
+          thumbs.pop(); // 直接移除最後一個
+          saveData();
+          updateDisplay();
+        }
+      } else {
+        alert("目前沒有點數可以刪除！");
+      }
     }
 
     function redeemSmile() {

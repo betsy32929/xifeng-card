@@ -1,330 +1,131 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
+<!doctype html>
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>析楓專屬集點卡</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>析楓分鐘卡</title>
   <style>
-    body { font-family: "Microsoft JhengHei", sans-serif; text-align: center; background: #fff9e6; margin: 0; padding: 20px; }
-    h1 { color: #ff9800; }
-
-    #status { font-size: 22px; margin: 10px 0; color: #333; }
-
-    /* 方塊按鈕排版 */
-    .buttonGrid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      max-width: 330px;
-      margin: 0 auto 20px;
-    }
-    .charBtn {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      border: none;
-      border-radius: 10px;
-      font-size: 22px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
-      width: 100px;
-      height: 100px;
-    }
-    .charBtn img {
-      width: 45px;
-      height: 45px;
-      margin-top: 4px;
-    }
-    /* 功能方塊顏色 */
-    .addSmileBtn { background-color: #ffdddd; }   /* 淡紅 */
-    .removeBtn { background-color: #fff0b3; }     /* 淡黃 */
-    .charBtn.role { background-color: #ffcc80; }  /* 角色原本的黃色 */
-
-    /* 其他功能按鈕 */
-    #deleteBtn, #redeemBtn, #deleteAllSmilesBtn, #resetBtn {
-      font-size: 20px; 
-      padding: 10px 16px; 
-      border: none; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      margin: 5px; 
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-    }
-    #deleteBtn { background-color: #e0e0e0; }
-    #redeemBtn { background-color: #ffc0cb; }
-    #deleteAllSmilesBtn { background-color: #ff6666; color: white; }
-    #resetBtn { background-color: #d3d3d3; }
-
-    /* 點數格子 */
-    .points { 
-      display: grid; 
-      grid-template-columns: repeat(5, 60px); 
-      justify-content: center; 
-      gap: 6px; 
-      margin: 15px 0; 
-    }
-    .slot { 
-      width: 60px; 
-      height: 60px; 
-      border: 1px solid #ccc; 
-      border-radius: 6px; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      background: #fff; 
-      position: relative;
-      cursor: pointer;
-    }
-    .slot img { width: 50px; height: 50px; }
-
-    .cancelX { 
-      color: red; 
-      font-size: 40px; 
-      font-weight: bold; 
-      position: absolute; 
-      top: 0; 
-      left: 0; 
-      width: 100%; 
-      height: 100%; 
-      text-align: center; 
-      line-height: 60px; 
-      pointer-events: none; 
-    }
-
-    /* 笑臉區：每排5個 */
-    #smileFaces {
-      display: grid;
-      grid-template-columns: repeat(5, 60px);
-      justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
-    }
-    .smile { 
-      font-size: 46px; 
-      cursor: pointer; 
-      position: relative; 
-      width: 55px; 
-      height: 55px; 
-      line-height: 55px; 
-      text-align: center; 
-    }
-    .smileX { 
-      color: red; 
-      font-size: 50px; 
-      font-weight: bold; 
-      position: absolute; 
-      top: -5px; 
-      left: 0; 
-      width: 100%; 
-      height: 100%; 
-      text-align: center; 
-      line-height: 55px; 
-      pointer-events: none; 
-    }
+    :root{font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif;color:#463526;background:#fff8eb}
+    *{box-sizing:border-box}body{margin:0;padding:24px 14px}main{max-width:680px;margin:auto}
+    h1{margin:0 0 5px;text-align:center;color:#a65324}p{margin:5px 0 18px;text-align:center;color:#725e4e}
+    .panel{background:#fff;border:2px solid #f0dfc2;border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 5px 16px #744a2012}
+    .balance{text-align:center;font-size:18px}.balance strong{display:block;font-size:clamp(34px,9vw,64px);color:#a65324;line-height:1.2}
+    .balance .converted{display:block;font-size:16px;color:#0000ee;margin-top:4px}
+    .meta{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;color:#765e4c;font-size:14px;margin-top:10px}
+    h2{font-size:19px;margin:0 0 15px;color:#71442b}.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:14px 10px;font-weight:700}
+    .add{background:#fbd7a5;color:#59391d;min-height:72px}.add:hover{background:#fac888}.dash{background:#e7edf9;color:#344766}.dash:hover{background:#d8e2f7}
+    .sub{font-size:13px;font-weight:400;display:block;margin-top:3px}.tally{background:#fff1d5;border:3px solid #d48b3c;text-align:center}.tally h2{font-size:27px;color:#864018}
+    .marks{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;min-height:116px;align-items:center;margin:8px 0 16px}
+    .mark{width:88px;height:100px;background:#fff;border:2px solid #e4b671;border-radius:12px;padding:4px}.empty{color:#927f6c;font-size:22px}.dashes{font-size:38px;letter-spacing:8px;color:#536987;line-height:1}
+    .redeem{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.redeem button{background:#b86146;color:white;font-size:22px;min-height:62px}.redeem button:hover{background:#a24d35}.redeem button:disabled{background:#d8ccc5;color:#8e817a;cursor:not-allowed}
+    .manual{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}.manual input{grid-column:1/-1;width:100%;min-width:0;border:2px solid #d8c4a7;border-radius:10px;padding:12px;font:inherit;font-size:18px}.manual button{background:#8e5b27;color:white}
+    .confirm{display:block;width:100%;margin:16px 0 10px;background:#a65324;color:#fff;font-size:20px}.confirm:disabled{background:#d8ccc5;color:#8e817a;cursor:not-allowed}
+    .minor{background:#f2ede5;color:#5b4d40;padding:10px 14px;margin:5px 7px 0 0}
+    small{color:#806e5c}
+    #notice{min-height:22px;text-align:center;color:#a3422e;font-weight:700;margin:10px 0}
+    @media(max-width:430px){.actions{grid-template-columns:1fr}.mark{width:72px;height:84px}.redeem{grid-template-columns:repeat(2,1fr)}}
+    /* 柔和的彩虹與浪漫氣氛 */
+    :root{color:#5d4d63;background:#fffafc}
+    body{min-height:100vh;background:
+      radial-gradient(circle at 8% 10%,#ffe6ed 0,transparent 27%),
+      radial-gradient(circle at 94% 12%,#e7e4ff 0,transparent 30%),
+      radial-gradient(circle at 7% 66%,#e7f7ee 0,transparent 32%),
+      radial-gradient(circle at 94% 78%,#fff1d9 0,transparent 30%),
+      linear-gradient(150deg,#fff9fb,#f9f8ff 45%,#fffdf6)}
+    main{position:relative}main:before{content:'✦  ♡  ✧';display:block;text-align:center;color:#d6a3bd;letter-spacing:18px;font-size:21px;margin:1px 0 8px}
+    h1{font-size:clamp(30px,6vw,42px);color:#9c638e;letter-spacing:3px;text-shadow:0 2px 0 #fff}
+    body>main>p{color:#9c819a}
+    .panel{background:#ffffffde;border:1px solid #eaddeb;border-radius:22px;box-shadow:0 8px 24px #a980a71b;backdrop-filter:blur(4px)}
+    .tally{background:linear-gradient(#fffdfdfa,#fffdfdfa) padding-box,linear-gradient(115deg,#f5b9c9,#f5d4a6,#d7e8b2,#bce4e3,#c8c3ee,#edc5e1) border-box;border:3px solid transparent;box-shadow:0 10px 28px #d9a6cf38}
+    .tally h2,h2{color:#8d668d}.mark{background:#fffdfd;border-color:#ead4e7;box-shadow:0 3px 10px #d9b6d42a}
+    .balance strong{color:#9e6aa7}.balance .converted{color:#0000ee}
+    .add{background:#f8e0e9;color:#6e4d66}.add:hover{background:#f4ccdd}
+    .actions .add:nth-child(3){background:#e5f3df}.actions .add:nth-child(3):hover{background:#d4ebca}
+    .actions .add:nth-child(4){background:#e6eafa}.actions .add:nth-child(4):hover{background:#d8def7}
+    .dash{background:#e5f5f5;color:#506c77}.dash:hover{background:#d4eeee}
+    .confirm{background:linear-gradient(90deg,#d69ac5,#b6a5e2);box-shadow:0 4px 12px #b58dbb42}.confirm:hover:not(:disabled){filter:brightness(.97)}
+    .manual input{border-color:#e6d3e7;background:#fffdfd}.manual input:focus{outline:2px solid #cba5df;outline-offset:1px}
+    .manual button{background:#a98bc9}.manual button:last-child{background:#82bdb5}
+    .redeem button{background:#d696af}.redeem button:hover{background:#c8829f}
+    .minor{background:#f3ecf3;color:#6d5b70}
+    button{transition:background .18s ease,transform .18s ease,filter .18s ease}button:active:not(:disabled){transform:scale(.98)}
+    @media(prefers-reduced-motion:reduce){button{transition:none}}
   </style>
 </head>
-<body>
-  <h1>析楓專屬集點卡</h1>
-
-  <div id="status">目前有效點數：0 個</div>
-
-  <div class="points" id="pointsArea"></div>
-  <div id="smileFaces"></div>
-
-  <!-- 方塊按鈕 -->
-  <div class="buttonGrid">
-    <button class="charBtn role"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/波力.png" alt="波力"></button>
-    <button class="charBtn role"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/安寶.png" alt="安寶"></button>
-    <button class="charBtn role"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/羅伊.png" alt="羅伊"></button>
-    <button class="charBtn role"><span>+1</span><img src="https://betsy32929.github.io/xifeng-card/赫力.png" alt="赫力"></button>
-
-    <!-- 修改後的功能方塊 -->
-    <button class="charBtn addSmileBtn" onclick="addSmile()">
-      <span style="color:red; font-size:26px;">+</span>
-      <span style="font-size:42px;">😀</span>
-    </button>
-
-    <button class="charBtn removeBtn" onclick="removePoint()">
-      <span style="color:black; font-size:24px;">-1</span>
-      <span style="color:red; font-size:34px;">X</span>
-    </button>
-  </div>
-
-  <!-- 其他功能按鈕 -->
-  <button onclick="deletePoint()" id="deleteBtn">誤觸刪除</button>
-  <button onclick="redeemSmile()" id="redeemBtn">兌換 😀</button>
-  <button onclick="deleteAllSmiles()" id="deleteAllSmilesBtn">刪除全部笑臉</button>
-  <button onclick="resetAll()" id="resetBtn">重置全部</button>
-
-  <script>
-    let thumbs = JSON.parse(localStorage.getItem("thumbs")) || [];
-    let smilesData = JSON.parse(localStorage.getItem("smiles")) || [];
-
-    function saveData() {
-      localStorage.setItem("thumbs", JSON.stringify(thumbs));
-      localStorage.setItem("smiles", JSON.stringify(smilesData));
-    }
-
-    function updateDisplay() {
-      const pointArea = document.getElementById("pointsArea");
-      pointArea.innerHTML = "";
-      const totalSlots = Math.ceil(thumbs.length / 5) * 5 || 5;
-
-      for (let i = 0; i < totalSlots; i++) {
-        const div = document.createElement("div");
-        div.className = "slot";
-
-        if (i < thumbs.length) {
-          const img = document.createElement("img");
-          img.src = thumbs[i].icon; 
-          div.appendChild(img);
-
-          if (thumbs[i].cancelled) {
-            const xx = document.createElement("span");
-            xx.textContent = "X";
-            xx.className = "cancelX";
-            div.appendChild(xx);
-          }
-
-          div.onclick = function() {
-            if (!thumbs[i].cancelled) {
-              if (confirm("要取消這個點數嗎？")) {
-                thumbs[i].cancelled = true;
-              }
-            } else {
-              if (confirm("要恢復這個點數嗎？")) {
-                thumbs[i].cancelled = false;
-              }
-            }
-            saveData();
-            updateDisplay();
-          };
-        }
-
-        pointArea.appendChild(div);
-      }
-
-      const validPoints = thumbs.filter(t => !t.cancelled).length;
-      document.getElementById("status").textContent = `目前有效點數：${validPoints} 個`;
-
-      const smileContainer = document.getElementById("smileFaces");
-      smileContainer.innerHTML = "";
-      smilesData.forEach((smile, index) => {
-        const span = document.createElement("span");
-        span.className = "smile";
-        span.textContent = "😀";
-
-        if (smile.redeemed) {
-          const xx = document.createElement("span");
-          xx.textContent = "X";
-          xx.className = "smileX";
-          span.appendChild(xx);
-        }
-
-        span.onclick = function() {
-          if (!smile.redeemed) {
-            if (confirm("確定要更換實體笑臉？")) {
-              smilesData[index].redeemed = true;
-            }
-          } else {
-            if (confirm("確定要刪除這個笑臉嗎？")) {
-              smilesData.splice(index, 1);
-            }
-          }
-          saveData();
-          updateDisplay();
-        };
-        smileContainer.appendChild(span);
-      });
-    }
-
-    // 綁定角色按鈕
-    document.querySelectorAll(".charBtn.role img").forEach(imgBtn => {
-      imgBtn.parentElement.onclick = () => {
-        if (imgBtn.src.includes("png")) { // 角色按鈕
-          addPoint(imgBtn.src);
-        }
-      };
-    });
-
-    function addPoint(iconUrl) {
-      thumbs.push({ cancelled: false, icon: iconUrl });
-      saveData();
-      updateDisplay();
-    }
-
-    function removePoint() {
-      for (let i = thumbs.length - 1; i >= 0; i--) {
-        if (!thumbs[i].cancelled) {
-          thumbs[i].cancelled = true;
-          break;
-        }
-      }
-      saveData();
-      updateDisplay();
-    }
-
-    function deletePoint() {
-      if (thumbs.length > 0) {
-        if (confirm("確定要刪除最後一個點數嗎？")) {
-          thumbs.pop();
-          saveData();
-          updateDisplay();
-        }
-      } else {
-        alert("目前沒有點數可以刪除！");
-      }
-    }
-
-    function addSmile() {
-      if (confirm("確定要直接新增一個笑臉嗎？")) {
-        smilesData.push({ redeemed: false });
-        saveData();
-        updateDisplay();
-      }
-    }
-
-    function redeemSmile() {
-      const validIndexes = thumbs
-        .map((t, i) => (!t.cancelled ? i : -1))
-        .filter(i => i >= 0);
-
-      if (validIndexes.length >= 10) {
-        for (let i = 0; i < 10; i++) {
-          thumbs.splice(validIndexes[i] - i, 1);
-        }
-        smilesData.push({ redeemed: false });
-        saveData();
-        updateDisplay();
-      } else {
-        alert("需要至少 10 個有效點數才能兌換笑臉！");
-      }
-    }
-
-    function deleteAllSmiles() {
-      if (smilesData.length > 0) {
-        if (confirm("確定要刪除所有笑臉嗎？")) {
-          smilesData = [];
-          saveData();
-          updateDisplay();
-        }
-      } else {
-        alert("目前沒有笑臉可以刪除！");
-      }
-    }
-
-    function resetAll() {
-      if (confirm("確定要重置嗎？點數與笑臉都會歸零")) {
-        thumbs = [];
-        smilesData = [];
-        saveData();
-        updateDisplay();
-      }
-    }
-
-    updateDisplay();
-  </script>
-</body>
-</html>
+<body><main>
+  <h1>析楓分鐘卡</h1>
+  <p>用「正」記錄累積的分鐘</p>
+  <section class="panel tally"><h2>待加入的正字</h2><div id="marks" class="marks"></div><button class="confirm" id="confirmMarks">確定加入總兌換（<span id="pendingCount">0 分鐘</span>）</button><small>實線一筆代表 1 分鐘；虛線直接顯示在下一筆，集滿兩條虛線變成一筆實線。</small></section>
+  <section class="panel balance">總兌換可用<strong id="balance">0 分鐘</strong><small class="converted" id="balanceConverted">0 小時 0 分鐘</small>
+    <div class="meta"><span>累積 <b id="earned">0 分鐘</b></span><span>已兌換 <b id="spent">0 分鐘</b></span></div>
+  </section>
+  <section class="panel"><h2>增加分鐘</h2><div class="actions">
+    <button class="add" data-action="solid">一條實線<span class="sub">＋1 分鐘</span></button>
+    <button class="dash" data-action="dashed">一條虛線<span class="sub">2 條虛線換 1 分鐘</span></button>
+    <button class="add" data-action="task">做好事<span class="sub">＋1 分鐘</span></button>
+    <button class="add" data-action="help">幫助人<span class="sub">＋1 分鐘</span></button>
+  </div><div class="manual"><input id="addAmount" type="number" min="1" step="1" inputmode="numeric" placeholder="輸入要增加的分鐘"><button data-add-target="marks">增加正字</button><button data-add-target="total">增加總兌換</button></div></section>
+  <section class="panel"><h2>兌換分鐘</h2><div class="redeem"><button data-redeem="5">−5</button><button data-redeem="10">−10</button><button data-redeem="15">−15</button><button data-redeem="20">−20</button><button data-redeem="25">−25</button><button data-redeem="30">−30</button></div></section>
+  <section class="panel"><button class="minor" id="undo">撤銷上一步</button><button class="minor" id="reset">全部歸零</button></section>
+  <div id="notice" role="status" aria-live="polite"></div>
+</main>
+<script>
+(() => {
+  const key='xifeng-minute-card-v1';
+  const fresh=()=>({earned:0,confirmed:0,spent:0,dashes:0,undo:[]});
+  let state;
+  try { state=Object.assign(fresh(),JSON.parse(localStorage.getItem(key)||'null')||{}); }
+  catch { state=fresh(); document.getElementById('notice').textContent='此瀏覽器無法儲存記錄，關閉後資料可能消失。'; }
+  if(!Number.isSafeInteger(state.confirmed))state.confirmed=state.spent;
+  delete state.history;
+  state.undo=state.undo.map(({earned,confirmed,spent,dashes})=>({earned,confirmed:Number.isSafeInteger(confirmed)?confirmed:spent,spent,dashes}));
+  const $=id=>document.getElementById(id);
+  const formatTime=minutes=>minutes>=60?Math.floor(minutes/60)+' 小時 '+minutes%60+' 分鐘':minutes+' 分鐘';
+  function save(){try{localStorage.setItem(key,JSON.stringify(state));}catch{$('notice').textContent='儲存失敗，請保持此頁開啟。';}}
+  function snapshot(){state.undo.push({earned:state.earned,confirmed:state.confirmed,spent:state.spent,dashes:state.dashes});if(state.undo.length>30)state.undo.shift();}
+  function update(){save();render();}
+  function mark(strokes,dashed){
+    const paths=['M5 7 H37','M21 7 V43','M21 25 H37','M8 31 V43','M5 43 H39'];
+    const solid=paths.slice(0,strokes).map(p=>'<path d="'+p+'"/>').join('');
+    const pending=dashed?'<path d="'+paths[strokes]+'" stroke="#536987" stroke-width="2" stroke-dasharray="3 3"/>':'';
+    return '<svg class="mark" viewBox="0 0 44 50" aria-label="'+strokes+' 分鐘'+(dashed?'，下一筆虛線待累積':'')+'" role="img"><g fill="none" stroke="#913b16" stroke-width="5" stroke-linecap="round">'+solid+pending+'</g></svg>';
+  }
+  function render(){
+    const pending=state.earned-state.confirmed,available=state.confirmed-state.spent;
+    $('balance').textContent=available+' 分鐘';$('balanceConverted').textContent=Math.floor(available/60)+' 小時 '+available%60+' 分鐘';$('earned').textContent=formatTime(state.earned);$('spent').textContent=formatTime(state.spent);$('pendingCount').textContent=formatTime(pending);
+    const markCount=Math.ceil((pending+(state.dashes?1:0))/5);
+    $('marks').innerHTML=markCount?Array.from({length:markCount},(_,i)=>{const solid=Math.max(0,Math.min(5,pending-i*5));return mark(solid,Boolean(state.dashes&&i===Math.floor(pending/5)));}).join(''):'<span class="empty">尚未累積分鐘</span>';
+    $('confirmMarks').disabled=pending===0;
+    document.querySelectorAll('[data-redeem]').forEach(button=>button.disabled=Number(button.dataset.redeem)>available);
+    $('undo').disabled=!state.undo.length;
+  }
+  document.querySelectorAll('[data-action]').forEach(button=>button.addEventListener('click',()=>{
+    const action=button.dataset.action;snapshot();
+    if(action==='dashed'){
+      state.dashes++;
+      if(state.dashes===2){state.dashes=0;state.earned++;}
+      update();
+    }else{state.earned++;update();}
+  }));
+  document.querySelectorAll('[data-add-target]').forEach(button=>button.addEventListener('click',()=>{
+    const n=Number($('addAmount').value);
+    if(!Number.isSafeInteger(n)||n<1){$('notice').textContent='請輸入大於 0 的整數分鐘。';return;}
+    snapshot();state.earned+=n;
+    if(button.dataset.addTarget==='total')state.confirmed+=n;
+    update();$('addAmount').value='';$('notice').textContent='已將 '+formatTime(n)+' 加入'+(button.dataset.addTarget==='total'?'總兌換':'正字')+'。';
+  }));
+  $('confirmMarks').addEventListener('click',()=>{
+    const pending=state.earned-state.confirmed;if(pending<1)return;
+    snapshot();state.confirmed=state.earned;update();$('notice').textContent='已將 '+formatTime(pending)+' 加入總兌換。';
+  });
+  document.querySelectorAll('[data-redeem]').forEach(button=>button.addEventListener('click',()=>{
+    const n=Number(button.dataset.redeem),available=state.confirmed-state.spent;
+    if(n>available){$('notice').textContent='可兌換分鐘不足。';return;}
+    snapshot();state.spent+=n;update();$('notice').textContent='已兌換 '+formatTime(n)+'。';
+  }));
+  $('undo').addEventListener('click',()=>{const previous=state.undo.pop();if(!previous)return;Object.assign(state,previous);save();render();$('notice').textContent='已撤銷上一步。';});
+  $('reset').addEventListener('click',()=>{if(!confirm('確定要將所有分鐘與虛線歸零嗎？'))return;snapshot();state.earned=0;state.confirmed=0;state.spent=0;state.dashes=0;update();$('notice').textContent='已全部歸零，可用撤銷上一步恢復。';});
+  render();save();
+})();
+</script></body></html>
